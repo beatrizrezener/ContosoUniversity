@@ -32,9 +32,13 @@ namespace ContosoUniversity.Controllers
             {
                 return NotFound();
             }
-
+           
             var student = await _context.Students
+                .Include(s => s.Enrollments)
+                    .ThenInclude(e => e.Course)
+                .AsNoTracking()  // Improves performance in scenarios where the entities returned won't be updated
                 .FirstOrDefaultAsync(m => m.ID == id);
+
             if (student == null)
             {
                 return NotFound();
